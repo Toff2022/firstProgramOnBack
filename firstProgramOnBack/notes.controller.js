@@ -60,6 +60,18 @@ async function deleteNote(id) {
         console.log(chalk.red(`Note with id "${id}" not found!`));
     }
 }
+
+async function updateNote(noteData) {
+    const notes = await getNotes()
+    const index = notes.findIndex(note => note.id === noteData.id)
+    if (index >= 0) {
+        notes[index] = { ...notes[index], ...noteData }
+        await saveNote(notes)
+        console.log(chalk.green(`Note with id: "${noteData.id}" successfully updated!`));
+
+    }
+}
+
 module.exports = {
-    addNote, printNotes, readNote, deleteNote
+    addNote, printNotes, readNote, deleteNote, getNotes, updateNote
 }
