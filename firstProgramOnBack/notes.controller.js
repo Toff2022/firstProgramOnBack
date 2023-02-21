@@ -52,13 +52,9 @@ async function readNote(id) {
 async function deleteNote(id) {
     const notes = await getNotes()
     const filteredNotes = notes.filter(note => note.id !== id)
-    if (filteredNotes.length !== notes.length) {
-        console.log(chalk.green(`Note with id: "${id}" successfully deleted!`));
 
-        saveNote(filteredNotes)
-    } else {
-        console.log(chalk.red(`Note with id "${id}" not found!`));
-    }
+    await saveNote(filteredNotes)
+    console.log(chalk.red(`Note with id: "${id}" successfully deleted!`));
 }
 
 async function updateNote(noteData) {
@@ -68,7 +64,6 @@ async function updateNote(noteData) {
         notes[index] = { ...notes[index], ...noteData }
         await saveNote(notes)
         console.log(chalk.green(`Note with id: "${noteData.id}" successfully updated!`));
-
     }
 }
 

@@ -10,7 +10,6 @@ const app = express()
 
 app.set("view engine", "ejs")
 app.set("views", "pages")
-
 app.use(express.static(path.resolve(__dirname, "public"))) //подключение скриптов из папки
 app.use(express.urlencoded({
     extended: true
@@ -50,7 +49,9 @@ app.listen(port, () => {
 })
 
 app.put("/:id", async (req, res) => {
-    await updateNotes({ id: req.params.id, title: req.params.title })
+    await updateNote({ id: req.params.id, title: req.body.title })
+    console.log("req_params", req.params);
+    console.log(("req_body", req.body));
     res.render("index", {
         title: "Express App",
         notes: await getNotes(),

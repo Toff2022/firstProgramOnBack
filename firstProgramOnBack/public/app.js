@@ -13,7 +13,9 @@ document.addEventListener("click", event => {
         console.log("edit id", id);
         const title = event.target.dataset.title
         console.log("edit title", title);
+
         const newTitle = prompt("Введите новое название : ", title)
+        console.log("newTitle", newTitle);
         if (newTitle !== null) {
             update({ id, title: newTitle }).then(() => {
                 event.target.closest("li").querySelector("span").innerText = newTitle
@@ -35,4 +37,6 @@ async function update(newNote) {
         },
         body: JSON.stringify(newNote)
     })
+    console.log("req_params", req.params);
+    console.log(("req_body", req.body));
 }
