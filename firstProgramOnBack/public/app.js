@@ -10,17 +10,40 @@ document.addEventListener("click", event => {
 
     if (event.target.dataset.type === "edit") {
         const id = event.target.dataset.id
-        console.log("edit id", id);
         const title = event.target.dataset.title
-        console.log("edit title", title);
+        // const newTitle = prompt("Введите новое название : ", title)
 
-        const newTitle = prompt("Введите новое название : ", title)
-        console.log("newTitle", newTitle);
-        if (newTitle !== null) {
-            update({ id, title: newTitle }).then(() => {
-                event.target.closest("li").querySelector("span").innerText = newTitle
-            })
+        const $task = event.target.closest("li")
+        const initialHtml = $task.innerHTML
+
+        $task.innerHTML = `
+        <input type="text" value="${title}">
+        <div>
+            <button class="btn btn-success" data-type="save">Сохранить</button>
+            <button class="btn btn-danger" data-type="cancel">Отменить</button>
+        </div>
+      `
+        const taskListener = ({ target }) => {
+            if (target.dataset.type === "cancel") {
+                $task.innerHTML = initialHtml
+                $task.removeEventListener("click", taskListener)
+            }
+            if (target.dataset.type === "save") {
+                const title = $task.querySelector("input").value
+                update({ title, id }).then(() => {
+                    $task.innerHTML = initialHtml
+                    $task.querySelector("span").innerText = title
+                    $task.querySelector("[data-type=edit]").dataset.title = title
+                    $task.removeEventListener("click", taskListener)
+                })
+            }
         }
+        $task.addEventListener("click", taskListener)
+        // if (newTitle !== null) {
+        //     update({ id, title: newTitle }).then(() => {
+        //         event.target.closest("li").querySelector("span").innerText = newTitle
+        //     })
+        // }
     }
 })
 
@@ -37,6 +60,4 @@ async function update(newNote) {
         },
         body: JSON.stringify(newNote)
     })
-    console.log("req_params", req.params);
-    console.log(("req_body", req.body));
 }
