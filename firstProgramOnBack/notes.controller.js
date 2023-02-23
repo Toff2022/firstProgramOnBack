@@ -23,7 +23,6 @@ async function addNote(title) {
     notes.push(note)
     await fs.writeFile(notesPath, JSON.stringify(notes))
     console.log(chalk.green("Note was added"));
-    console.log("notesAfter", notes);
 }
 
 async function printNotes() {
@@ -52,7 +51,6 @@ async function readNote(id) {
 async function deleteNote(id) {
     const notes = await getNotes()
     const filteredNotes = notes.filter(note => note.id !== id)
-
     await saveNote(filteredNotes)
     console.log(chalk.red(`Note with id: "${id}" successfully deleted!`));
 }
@@ -66,7 +64,18 @@ async function updateNote(noteData) {
         console.log(chalk.green(`Note with id: "${noteData.id}" successfully updated!`));
     }
 }
+async function editNote(id, newTitle) {
+    const notes = await getNotes()
+    console.log(chalk.white("Edit note id", id));
+    console.log(chalk.white("Edit note title", newTitle));
+    const index = notes.findIndex(note => note.id === id)
+    if (index >= 0) {
+        notes[index].title = newTitle
+        await saveNote(notes)
+        console.log(chalk.inverse.white(`Note with id: "${id}" successfully edit!`));
+    }
+}
 
 module.exports = {
-    addNote, printNotes, readNote, deleteNote, getNotes, updateNote
+    addNote, printNotes, readNote, deleteNote, getNotes, updateNote, editNote
 }

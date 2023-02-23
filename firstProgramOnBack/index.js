@@ -3,7 +3,7 @@ const express = require("express")
 const path = require("path")
 const chalk = require("chalk")
 const pkg = require("./package.json")
-const { addNote, printNotes, readNote, deleteNote, getNotes, updateNote } = require("./notes.controller")
+const { addNote, printNotes, readNote, deleteNote, getNotes, updateNote, editNote } = require("./notes.controller")
 
 const port = 3000
 const app = express()
@@ -50,8 +50,6 @@ app.listen(port, () => {
 
 app.put("/:id", async (req, res) => {
     await updateNote({ id: req.params.id, title: req.body.title })
-    console.log("req_params", req.params);
-    console.log(("req_body", req.body));
     res.render("index", {
         title: "Express App",
         notes: await getNotes(),
@@ -106,6 +104,25 @@ yargs.command({
     },
     async handler({ id }) {
         deleteNote(id)
+    }
+})
+yargs.command({
+    command: "edit",
+    describe: "Edit note by id",
+    builder: {
+        id: {
+            type: "string",
+            describe: "Note id",
+            demandOption: true,
+        },
+        newTitle: {
+            type: "string",
+            describe: "Note title",
+            demandOption: true,
+        }
+    },
+    async handler({ id, newTitle }) {
+        editNote(id, newTitle)
     }
 })
 
